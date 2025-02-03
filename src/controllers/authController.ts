@@ -50,7 +50,8 @@ export async function login(req: Request, res: Response): Promise<any> {
 
     const token = jwt.sign({
         id: result.id,
-        email: result.email
+        email: result.email,
+        role: result.role
     }, JWT_TOKEN, { expiresIn: "5h" })
 
     res.status(200).json(successRes("success", 200, "Login successfully", token))

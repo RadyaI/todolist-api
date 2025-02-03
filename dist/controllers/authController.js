@@ -59,7 +59,8 @@ function login(req, res) {
         }
         const token = jsonwebtoken_1.default.sign({
             id: result.id,
-            email: result.email
+            email: result.email,
+            role: result.role
         }, secret_1.JWT_TOKEN, { expiresIn: "5h" });
         res.status(200).json((0, response_1.successRes)("success", 200, "Login successfully", token));
     });
