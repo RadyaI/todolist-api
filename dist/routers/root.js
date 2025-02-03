@@ -7,6 +7,9 @@ const express_1 = __importDefault(require("express"));
 const authRouter_1 = __importDefault(require("./authRouter"));
 const rootRouter = (0, express_1.default)();
 rootRouter.use("/auth", authRouter_1.default);
+rootRouter.get("/ip", (req, res) => {
+    res.json(req.ip);
+});
 rootRouter.use("*", (req, res) => {
     res.status(404).json({ Route: "Not Found" });
 });
