@@ -9,7 +9,7 @@ function successRes(status, statusCode, message, data) {
         result: {
             message,
             data
-        }
+        },
     };
 }
 function errorRes(status, statusCode, code, message) {

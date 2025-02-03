@@ -5,7 +5,7 @@ export function successRes(status: String, statusCode: Number, message: String, 
         result: {
             message,
             data
-        }
+        },
     }
 }
 
