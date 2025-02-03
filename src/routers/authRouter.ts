@@ -1,9 +1,8 @@
 import router, { Router } from "express"
+import { register } from "../controllers/authController"
 
 const authRouter: Router = router()
 
-authRouter.get("/register", (req, res) => {
-    res.json({ Register: "working" })
-})
+authRouter.post("/register", register)
 
 export default authRouter
