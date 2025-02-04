@@ -60,7 +60,7 @@ function register(req, res) {
             name: joi_1.default.string().required(),
             email: joi_1.default.string().email({ tlds: { allow: ["com", "net"] } }).required(),
             role: joi_1.default.string().valid("ADMIN", "USER").required(),
-            password: joi_1.default.string().required()
+            password: joi_1.default.string().min(3).required()
         });
         const validate = schema.validate(req.body);
         if (validate.error) {
@@ -86,8 +86,13 @@ function register(req, res) {
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { email, password } = req.body;
-        if (!email || email === "" || !password || password === "") {
-            return res.status(400).json((0, response_1.errorRes)("error", 400, "MISSING_REQUIRED_FIELDS", "Email/password is empty"));
+        const schema = joi_1.default.object({
+            email: joi_1.default.string().email({ tlds: { allow: ["com", "net"] } }).required(),
+            password: joi_1.default.string().min(3).required()
+        });
+        const validate = schema.validate(req.body);
+        if (validate.error) {
+            return res.status(400).json((0, response_1.validateRes)(validate.error.message));
         }
         const result = yield __1.prisma.user.findFirst({
             where: { email }

@@ -13,7 +13,7 @@ export async function register(req: Request, res: Response): Promise<any> {
         name: Joi.string().required(),
         email: Joi.string().email({ tlds: { allow: ["com", "net"] } }).required(),
         role: Joi.string().valid("ADMIN", "USER").required(),
-        password: Joi.string().required()
+        password: Joi.string().min(3).required()
     })
 
     const validate = schema.validate(req.body)
@@ -43,8 +43,16 @@ export async function register(req: Request, res: Response): Promise<any> {
 
 export async function login(req: Request, res: Response): Promise<any> {
     const { email, password } = req.body
-    if (!email || email === "" || !password || password === "") {
-        return res.status(400).json(errorRes("error", 400, "MISSING_REQUIRED_FIELDS", "Email/password is empty"))
+
+    const schema = Joi.object({
+        email: Joi.string().email({ tlds: { allow: ["com", "net"] } }).required(),
+        password: Joi.string().min(3).required()
+    })
+
+    const validate = schema.validate(req.body)
+
+    if (validate.error) {
+        return res.status(400).json(validateRes(validate.error.message))
     }
 
     const result = await prisma.user.findFirst({

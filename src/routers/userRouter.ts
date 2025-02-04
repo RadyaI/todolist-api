@@ -1,12 +1,12 @@
 import router, { Router } from "express"
 import { admin, jwtAuth } from "../middlewares/auth"
-import { getAll } from "../controllers/userController"
+import { getUserById, getUsers } from "../controllers/userController"
 
 const userRouter: Router = router()
 
 userRouter.get("/")
-userRouter.get("/all", jwtAuth, admin, getAll)
-userRouter.get("/all/:id")
+userRouter.get("/all", jwtAuth, admin, getUsers)
+userRouter.get("/all/:id", jwtAuth, admin, getUserById)
 
 userRouter.put("/")
 userRouter.delete("/")

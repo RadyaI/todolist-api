@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAll = getAll;
+exports.getUsers = getUsers;
+exports.getUserById = getUserById;
 const __1 = require("..");
 const response_1 = require("../middlewares/response");
-function getAll(req, res) {
+function getUsers(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield __1.prisma.user.findMany();
@@ -20,6 +21,22 @@ function getAll(req, res) {
         }
         catch (error) {
             return res.status(error.code).json((0, response_1.errorRes)("error", error.code, error.name, error.message));
+        }
+    });
+}
+function getUserById(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const userId = req.params.id;
+            const result = yield __1.prisma.user.findFirst({
+                where: { id: Number(userId) }
+            });
+            if (!result)
+                return res.status(404).json((0, response_1.errorRes)("error", 404, "RESOURCE_NOT_FOUND", `User with id ${userId} does not exist`));
+            res.status(200).json((0, response_1.successRes)("success", 200, "Data fetch successfully", result));
+        }
+        catch (error) {
+            res.send(error.message);
         }
     });
 }
