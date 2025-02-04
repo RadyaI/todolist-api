@@ -1,15 +1,24 @@
 import { Request, Response } from "express";
 import { hashSync, compareSync } from "bcrypt"
-import jwt, { sign } from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken'
 import { prisma } from "..";
-import { errorRes, successRes } from "../middlewares/response";
+import { errorRes, successRes, validateRes } from "../middlewares/response";
 import { JWT_TOKEN } from "../secret";
+import Joi from "joi"
 
 export async function register(req: Request, res: Response): Promise<any> {
     const { name, email, role, password } = req.body
 
-    if (!name || name === "" || !email || email === "" || !role || role === "" || !password || password === "") {
-        return res.status(400).json(errorRes("error", 400, "MISSING_REQUIRED_FIELDS", "Required fields are missing."))
+    const schema = Joi.object({
+        name: Joi.string().required(),
+        email: Joi.string().email({ tlds: { allow: ["com", "net"] } }).required(),
+        role: Joi.string().valid("ADMIN", "USER").required(),
+        password: Joi.string().required()
+    })
+
+    const validate = schema.validate(req.body)
+    if (validate.error) {
+        return res.status(400).json(validateRes(validate.error.message))
     }
 
     const check = await prisma.user.findFirst({
