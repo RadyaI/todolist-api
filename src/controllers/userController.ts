@@ -24,3 +24,5 @@ export async function getUserById(req: Request, res: Response): Promise<any> {
         res.send(error.message)
     }
 }
+
+// Otw get user by login user
