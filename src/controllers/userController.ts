@@ -85,3 +85,22 @@ export async function updateUser(req: Request, res: Response): Promise<any> {
         res.status(500).json({ msg: error.message })
     }
 }
+
+export async function deleteUser(req: Request, res: Response): Promise<any> {
+    try {
+        const userData = (req as any).auth
+
+        const result = await prisma.user.delete({
+            where: { id: userData.id }
+        })
+
+        if (!result) {
+            return res.status(404).json(errorRes("Error", 404, "RESOURCE_NOT_FOUND", `User with id ${userData.id} does not exist!`))
+        }
+
+        res.status(200).json(successRes("Success", 200, "Success delete user", result))
+
+    } catch (error: any) {
+        res.status(500).json({ msg: error.message })
+    }
+}

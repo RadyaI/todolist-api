@@ -11,5 +11,5 @@ userRouter.get("/", auth_1.jwtAuth, userController_1.getUser);
 userRouter.get("/all", auth_1.jwtAuth, auth_1.admin, userController_1.getUsers);
 userRouter.get("/all/:id", auth_1.jwtAuth, auth_1.admin, userController_1.getUserById);
 userRouter.put("/", auth_1.jwtAuth, userController_1.updateUser);
-userRouter.delete("/");
+userRouter.delete("/", auth_1.jwtAuth, userController_1.deleteUser);
 exports.default = userRouter;

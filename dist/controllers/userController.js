@@ -16,6 +16,7 @@ exports.getUser = getUser;
 exports.getUsers = getUsers;
 exports.getUserById = getUserById;
 exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
 const __1 = require("..");
 const response_1 = require("../middlewares/response");
 const joi_1 = __importDefault(require("joi"));
@@ -96,6 +97,23 @@ function updateUser(req, res) {
                 }
             });
             res.status(200).json((0, response_1.successRes)("Success", 200, `Success update user with email ${email}`, result));
+        }
+        catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    });
+}
+function deleteUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const userData = req.auth;
+            const result = yield __1.prisma.user.delete({
+                where: { id: userData.id }
+            });
+            if (!result) {
+                return res.status(404).json((0, response_1.errorRes)("Error", 404, "RESOURCE_NOT_FOUND", `User with id ${userData.id} does not exist!`));
+            }
+            res.status(200).json((0, response_1.successRes)("Success", 200, "Success delete user", result));
         }
         catch (error) {
             res.status(500).json({ msg: error.message });
