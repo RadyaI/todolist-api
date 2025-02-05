@@ -8,12 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUser = getUser;
 exports.getUsers = getUsers;
 exports.getUserById = getUserById;
+exports.updateUser = updateUser;
 const __1 = require("..");
 const response_1 = require("../middlewares/response");
+const joi_1 = __importDefault(require("joi"));
 function getUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -55,6 +60,45 @@ function getUserById(req, res) {
         }
         catch (error) {
             res.send(error.message);
+        }
+    });
+}
+function updateUser(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { name, email, role, password } = req.body;
+            const userData = req.auth;
+            const schema = joi_1.default.object({
+                name: joi_1.default.string().min(3).max(20),
+                email: joi_1.default.string().email({ tlds: { allow: ["com", "net"] } }),
+                password: joi_1.default.string().min(3).max(20),
+                role: joi_1.default.string().valid("ADMIN", "USER")
+            });
+            const validate = schema.validate(req.body);
+            if (validate.error) {
+                return res.status(400).json((0, response_1.validateRes)(validate.error.message));
+            }
+            const checkUser = yield __1.prisma.user.findFirst({
+                where: { email }
+            });
+            if (!checkUser) {
+                return res.status(404).json((0, response_1.errorRes)("Error", 404, "RESOURCE_NOT_FOUND", `User with email ${email} does not exist!`));
+            }
+            const result = yield __1.prisma.user.update({
+                where: {
+                    id: userData.id
+                },
+                data: {
+                    name,
+                    email,
+                    role,
+                    password
+                }
+            });
+            res.status(200).json((0, response_1.successRes)("Success", 200, `Success update user with email ${email}`, result));
+        }
+        catch (error) {
+            res.status(500).json({ msg: error.message });
         }
     });
 }
