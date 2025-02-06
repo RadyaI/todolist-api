@@ -4,8 +4,8 @@
 
 1. Clone repository:
    ```sh
-   git clone <repo-url>
-   cd <repo-folder>
+   git clone https://github.com/RadyaI/todolist-api.git
+   cd todolist-api
    ```
 2. Install dependencies:
    ```sh
