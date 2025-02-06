@@ -1,6 +1,6 @@
 import router, { Router } from 'express'
 import { jwtAuth } from '../middlewares/auth'
-import { createTask, doneTask, getActiveTasks, getTaskById, getTasks } from '../controllers/taskController'
+import { createTask, deleteTask, doneTask, getActiveTasks, getTaskById, getTasks, updateTask } from '../controllers/taskController'
 
 const taskRouter: Router = router()
 
@@ -10,7 +10,7 @@ taskRouter.get("/:id", jwtAuth, getTaskById)
 
 taskRouter.post("/", jwtAuth, createTask)
 taskRouter.put("/done/:id", jwtAuth, doneTask)
-taskRouter.put("/:id")
-taskRouter.delete("/:id")
+taskRouter.put("/:id", jwtAuth, updateTask)
+taskRouter.delete("/:id", jwtAuth, deleteTask)
 
 export default taskRouter

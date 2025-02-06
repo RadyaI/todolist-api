@@ -17,6 +17,8 @@ exports.getTaskById = getTaskById;
 exports.getActiveTasks = getActiveTasks;
 exports.createTask = createTask;
 exports.doneTask = doneTask;
+exports.updateTask = updateTask;
+exports.deleteTask = deleteTask;
 const joi_1 = __importDefault(require("joi"));
 const response_1 = require("../middlewares/response");
 const __1 = require("..");
@@ -123,6 +125,59 @@ function doneTask(req, res) {
             if (result.count === 0)
                 return res.status(404).json((0, response_1.errorRes)("Error", 404, "RESOURCE_NOT_FOUND", `Task with userId ${userData.id} and task id ${taskId} does not exist or already done`));
             res.status(200).json((0, response_1.successRes)("Success", 200, "Task completed", result));
+        }
+        catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    });
+}
+function updateTask(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { taskName, priority } = req.body;
+            const taskId = req.params.id;
+            const userData = req.auth;
+            const schema = joi_1.default.object({
+                taskName: joi_1.default.string().min(3).max(200),
+                priority: joi_1.default.string().valid("Low", "Medium", "High"),
+            });
+            const validate = schema.validate(req.body);
+            if (validate.error)
+                return res.status(400).json((0, response_1.validateRes)(validate.error.message));
+            const result = yield __1.prisma.task.updateMany({
+                where: {
+                    userId: userData.id,
+                    id: Number(taskId),
+                    status: false
+                },
+                data: {
+                    taskName,
+                    priority
+                }
+            });
+            if (result.count === 0)
+                return res.status(204).json((0, response_1.errorRes)("Error", 204, "NO_CONTENT", `Task with userId ${userData.id} and task id ${taskId} does not exist or nothing happened`));
+            res.status(200).json((0, response_1.successRes)("Success", 200, "Data updated successfully", result));
+        }
+        catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    });
+}
+function deleteTask(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const taskId = req.params.id;
+            const userData = req.auth;
+            const result = yield __1.prisma.task.deleteMany({
+                where: {
+                    id: Number(taskId),
+                    userId: userData.id
+                }
+            });
+            if (result.count === 0)
+                return res.status(404).json((0, response_1.errorRes)("Error", 404, "RESOURCE_NOT_FOUND", `Task with userId ${userData.id} and taskId ${taskId} does not exist or already deleted`));
+            res.status(200).json((0, response_1.successRes)("Success", 200, "Task deleted successfully", result));
         }
         catch (error) {
             res.status(500).json({ msg: error.message });

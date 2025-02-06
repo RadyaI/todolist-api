@@ -64,7 +64,7 @@ export async function updateUser(req: Request, res: Response): Promise<any> {
             where: { email }
         })
         if (!checkUser) {
-            return res.status(404).json(errorRes("Error", 404, "RESOURCE_NOT_FOUND", `User with email ${email} does not exist!`))
+            return res.status(404).json(errorRes("Error", 404, "RESOURCE_NOT_FOUND", `User with email ${userData.email} does not exist!`))
         }
 
         const result = await prisma.user.update({

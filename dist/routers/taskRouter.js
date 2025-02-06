@@ -12,6 +12,6 @@ taskRouter.get("/active", auth_1.jwtAuth, taskController_1.getActiveTasks);
 taskRouter.get("/:id", auth_1.jwtAuth, taskController_1.getTaskById);
 taskRouter.post("/", auth_1.jwtAuth, taskController_1.createTask);
 taskRouter.put("/done/:id", auth_1.jwtAuth, taskController_1.doneTask);
-taskRouter.put("/:id");
-taskRouter.delete("/:id");
+taskRouter.put("/:id", auth_1.jwtAuth, taskController_1.updateTask);
+taskRouter.delete("/:id", auth_1.jwtAuth, taskController_1.deleteTask);
 exports.default = taskRouter;
