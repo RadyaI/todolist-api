@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { prisma } from '..'
 import { errorRes, successRes, validateRes } from '../middlewares/response'
-import Joi, { any, string } from 'joi'
+import Joi from 'joi'
 
 export async function getUser(req: Request, res: Response): Promise<any> {
     try {
