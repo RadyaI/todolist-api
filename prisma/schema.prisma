@@ -41,6 +41,7 @@ model Task {
   userId    Int
   taskName  String
   priority  Priority
+  status    Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
